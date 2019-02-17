@@ -1,10 +1,12 @@
+pragma solidity 0.4.24;
+
 contract Hackathon {
     using SafeMath for uint256;
      
     event VotesBought(address indexed _recipient, uint256 _amount, uint256 _periodIndex);
     event Vote(address indexed _voterAddress, address indexed _candidateAddress, uint256 _amount, uint256 _periodIndex);
 
-    address public token = 0xbbf289d846208c16edc8474705c748aff07732db; // DAI Smart Contract
+    address public token; // DAI Smart Contract
     uint256 public nonce;
 
 
@@ -64,8 +66,8 @@ contract Hackathon {
  
 
     function vote(uint256 _id, address _candidateAddress, uint256 _amount) external {
-        //require(OwnedRegistry(hackathons[_id].juryRegistry).isWhitelisted(msg.sender));
-        //require(OwnedRegistry(hackathons[_id].candidatesRegistry).isWhitelisted(_candidateAddress));
+        require(OwnedRegistry(hackathons[_id].juryRegistry).isWhitelisted(msg.sender));
+        require(OwnedRegistry(hackathons[_id].candidatesRegistry).isWhitelisted(_candidateAddress));
         require(votesBalance[_id][msg.sender] >= _amount);
         votesReceived[_id][_candidateAddress] = votesReceived[_id][_candidateAddress].add(_amount);
         votesBalance[_id][msg.sender] -= _amount;
